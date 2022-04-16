@@ -1,25 +1,43 @@
 class LightManager {
   constructor(client) {
     this.client = client;
+    this.bulbs = [];
+  }
+
+  clearBulbs() {
+    this.bulbs = [];
+  }
+
+  async startSearchingAndAddBulbs() {
+    this.clearBulbs();
+    this.client.startDiscovery().on("bulb-new", async (bulb) => {
+      this.bulbs.push(
+        await this.client.getDevice({ host: bulb.host, port: bulb.port })
+      );
+    });
+  }
+
+  stopSearching() {
+    this.client.stopDiscovery();
+  }
+
+  async turnOffRoomLights() {
+    for (let i = 0; i < this.bulbs.length; i++) {
+      await this.bulbs[i].setPowerState(false);
+    }
+  }
+
+  async turnOnRoomLights() {
+    for (let i = 0; i < this.bulbs.length; i++) {
+      await this.bulbs[i].setPowerState(true);
+    }
   }
 
   async toggleRoomLights() {
-    this.bulb1 = await this.client.getDevice({
-      host: "192.168.50.34",
-      port: "9999",
-    });
-    this.bulb2 = await this.client.getDevice({
-      host: "192.168.50.167",
-      port: "9999",
-    });
-    this.bulb3 = await this.client.getDevice({
-      host: "192.168.50.237",
-      port: "9999",
-    });
-
-    await this.bulb1.setPowerState(!(await this.bulb1.getPowerState()));
-    await this.bulb2.setPowerState(!(await this.bulb2.getPowerState()));
-    await this.bulb3.setPowerState(!(await this.bulb3.getPowerState()));
+    for (let i = 0; i < this.bulbs.length; i++) {
+      let bulb = this.bulbs[i];
+      await bulb.setPowerState(!(await bulb.getPowerState()));
+    }
   }
 }
 

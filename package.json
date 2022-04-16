@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "css": "npx tailwindcss -i ./src/input.css -o ./src/main.css --watch"
   },
   "keywords": [],
   "author": "",

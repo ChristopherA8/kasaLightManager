@@ -4,8 +4,11 @@ const fs = require("fs");
 const { Client, Bulb } = require("tplink-smarthome-api");
 const client = new Client();
 const LightManager = require("./LightManger");
+let lightManager = new LightManager(client);
 
 let win;
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const createWindow = async () => {
   win = new BrowserWindow({
@@ -40,6 +43,26 @@ ipcMain.on("toMain", async (event, args) => {
   // Send result back to renderer process
   win.webContents.send("fromMain", args);
 
-  let lightManager = new LightManager(client);
-  await lightManager.toggleRoomLights();
+  switch (args) {
+    case "discover":
+      await lightManager.startSearchingAndAddBulbs();
+      await sleep(4000);
+      await lightManager.stopSearching();
+      win.webContents.send("fromMain", "Done Searching");
+      break;
+    case "onOff":
+      await lightManager.toggleRoomLights();
+      win.webContents.send("fromMain", "toggle");
+      break;
+    case "on":
+      await lightManager.turnOnRoomLights();
+      win.webContents.send("fromMain", "on");
+      break;
+    case "off":
+      await lightManager.turnOffRoomLights();
+      win.webContents.send("fromMain", "off");
+      break;
+    default:
+      break;
+  }
 });
