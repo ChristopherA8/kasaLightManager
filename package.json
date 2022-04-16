@@ -1,0 +1,17 @@
+{
+  "name": "kasa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^18.0.3",
+    "tailwindcss": "^3.0.24",
+    "tplink-smarthome-api": "^3.3.0"
+  }
+}
