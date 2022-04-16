@@ -24,7 +24,7 @@ const createWindow = async () => {
 
   win.removeMenu();
   win.loadFile("src/index.html");
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 };
 
 app.on("window-all-closed", () => {
@@ -46,9 +46,19 @@ ipcMain.on("toMain", async (event, args) => {
   switch (args) {
     case "discover":
       await lightManager.startSearchingAndAddBulbs();
-      await sleep(4000);
+      await sleep(6000);
       await lightManager.stopSearching();
-      win.webContents.send("fromMain", "Done Searching");
+      win.webContents.send("fromMain", "done");
+      break;
+    case "discover-again":
+      await lightManager.searchAgain();
+      await sleep(6000);
+      await lightManager.stopSearching();
+      win.webContents.send("fromMain", "done");
+      break;
+    case "clear":
+      await lightManager.clearBulbs();
+      win.webContents.send("fromMain", "cleared");
       break;
     case "onOff":
       await lightManager.toggleRoomLights();

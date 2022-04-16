@@ -17,6 +17,15 @@ class LightManager {
     });
   }
 
+  async searchAgain() {
+    this.clearBulbs();
+    this.client.startDiscovery().on("bulb-online", async (bulb) => {
+      this.bulbs.push(
+        await this.client.getDevice({ host: bulb.host, port: bulb.port })
+      );
+    });
+  }
+
   stopSearching() {
     this.client.stopDiscovery();
   }

@@ -3,15 +3,16 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Hello World!</title>
+  <title>Kasa Light Manager</title>
   <link rel="stylesheet" href="main.css">
 </head>
 
 <body>
   <div class="flex flex-col items-center justify-center w-full mb-12">
-    <label id="discover" class="p-8 text-gray-700 font-medium">Discover Lights</label>
-    <label id="on" class="p-8 text-gray-700 font-medium">Turn lights on</label>
-    <label id="off" class="p-8 text-gray-700 font-medium">Turn lights off</label>
+    <label id="discover" class="p-8 text-gray-600 font-medium cursor-pointer hover:text-gray-900">Discover Lights</label>
+    <label id="clear" class="p-8 text-gray-600 font-medium cursor-pointer hover:text-gray-900">Clear Lights</label>
+    <label id="on" class="p-8 text-gray-600 font-medium cursor-pointer hover:text-gray-900">Turn lights on</label>
+    <label id="off" class="p-8 text-gray-600 font-medium cursor-pointer hover:text-gray-900">Turn lights off</label>
     <label id="onOff" for="toggleB" class="p-8 flex items-center cursor-pointer">
       <!-- toggle -->
       <div class="relative">
@@ -23,7 +24,7 @@
         <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition"></div>
       </div>
       <!-- label -->
-      <div class="ml-3 text-gray-700 font-medium">
+      <div class="ml-3 text-gray-600 font-medium hover:text-gray-900">
         room lights on/off
       </div>
     </label>
@@ -31,7 +32,12 @@
   </div>
   <script>
     document.getElementById("discover").addEventListener('mouseup', e => {
-      window.api.send("toMain", "discover")
+      if (document.getElementById("discover").innerHTML == "Discover Lights") window.api.send("toMain", "discover");
+      else window.api.send("toMain", "discover-again");
+    })
+
+    document.getElementById("clear").addEventListener('mouseup', e => {
+      window.api.send("toMain", "clear")
     })
 
     document.getElementById("onOff").addEventListener('mouseup', e => {
@@ -49,8 +55,11 @@
     window.api.receive("fromMain", (data) => {
       console.log(`Received ${data} from main process`);
       switch (data) {
-        case "Done Searching":
+        case "done":
           document.getElementById("discover").innerHTML = "Search Again";
+          break;
+        case "cleared":
+          document.getElementById("discover").innerHTML = "Discover Lights";
           break;
         case "toggle":
           break;
